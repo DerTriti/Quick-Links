@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-layout="grid" data-link-style="classic" data-show-favicons="false" data-reorder="drag">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Quick Links</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="brand">Quick Links</div>
+      <div class="menu">
+        <button class="link-btn" id="btnOpenSettings">Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <section class="card" id="homeCard">
+      <h1>Home</h1>
+      <p class="muted">Organize your links. Drag & drop to reorder links and categories. Changes are saved automatically.</p>
+
+      <div class="hr"></div>
+
+      <div class="controls">
+        <button class="link-btn" id="btnAddLink">Add Link</button>
+        <button class="link-btn" id="btnAddCategory">Add Category</button>
+        <button class="link-btn" id="btnImport">Import</button>
+        <button class="link-btn" id="btnExport">Export</button>
+        <span class="badge" id="linkCount">0 links</span>
+        <div class="layout-switch">
+          <span class="muted">Layout:</span>
+          <button class="small-btn" data-layout="list">List</button>
+          <button class="small-btn" data-layout="grid">Grid</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="category-actions">
+        <span class="muted">Categories:</span>
+        <div class="categories" id="categories"></div>
+      </div>
+
+      <div class="links-wrap">
+        <div id="linksContainer" class="links-grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <div class="footer">© <span id="year"></span> Quick Links.</div>
+  </div>
+
+  <div class="modal-overlay" id="settingsOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
+      <div class="modal-header">
+        <div class="modal-title">Settings</div>
+        <button class="close-btn" id="btnCloseSettings">Close</button>
+      </div>
+      <div class="modal-body">
+        <section class="section">
+          <div class="section-title"><strong>Theme</strong></div>
+          <div class="section-content">
+            <div class="form-row">
+              <label><input type="radio" name="theme" value="light" checked> Light</label>
+              <label><input type="radio" name="theme" value="dark-elegant"> Dark</label>
+              <label><input type="radio" name="theme" value="auto"> Auto</label>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title"><strong>Link Style</strong></div>
+          <div class="section-content">
+            <div class="form-row">
+              <label><input type="radio" name="linkStyle" value="classic" checked> Classic</label>
+              <label><input type="radio" name="linkStyle" value="modern"> Modern</label>
+              <label><input type="radio" name="linkStyle" value="minimal"> Minimal</label>
+              <label><input type="radio" name="linkStyle" value="card"> Card</label>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title"><strong>Layout</strong></div>
+          <div class="section-content">
+            <div class="form-row">
+              <label><input type="radio" name="layout" value="list"> List</label>
+              <label><input type="radio" name="layout" value="grid" checked> Grid</label>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title"><strong>Reorder Mode</strong></div>
+          <div class="section-content">
+            <div class="form-row">
+              <label><input type="radio" name="reorder" value="drag" checked> Drag & Drop</label>
+              <label><input type="radio" name="reorder" value="buttons"> Buttons ↑ ↓</label>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title"><strong>Information</strong></div>
+          <div class="section-content">
+            <div class="form-row">
+              <label><input type="checkbox" id="toggleFavicons"> Enable site icons (favicons)</label>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title"><strong>Font Source</strong></div>
+          <div class="section-content">
+            <div class="form-row">
+              <label><input type="radio" name="fontSource" value="default" checked> Default Modern</label>
+              <label><input type="radio" name="fontSource" value="system"> System Fonts</label>
+              <label><input type="radio" name="fontSource" value="builtin"> Web Fonts (built-in)</label>
+              <label><input type="radio" name="fontSource" value="local"> Local PC Fonts</label>
+              <label><input type="radio" name="fontSource" value="url"> URL Web Font</label>
+            </div>
+            <div class="form-row" id="fontBuiltInRow" style="display:none">
+              <select id="fontBuiltIn" class="select"></select>
+            </div>
+            <div class="form-row" id="fontLocalRow" style="display:none">
+              <select id="fontLocal" class="select"></select>
+            </div>
+            <div class="form-row" id="fontUrlRow" style="display:none">
+              <input id="fontUrl" class="input" placeholder="https://example.com/font.css" />
+              <input id="fontFamilyUrl" class="input" placeholder="CSS font-family name" />
+              <button class="link-btn" id="btnApplyUrlFont">Apply</button>
+            </div>
+            <p class="muted">Font settings are not saved.</p>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title"><strong>Website Type</strong></div>
+          <div class="section-content">
+            <div class="form-row">
+              <button class="link-btn" id="btnActivateCom">Activate .com (default)</button>
+              <input class="input" id="tldSearch" placeholder="Search extension (e.g. .it, .org, .東京)" />
+            </div>
+            <div id="tldList" class="list"></div>
+            <p class="muted">“Activate” is plain text. Not persisted.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="linkOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Link editor">
+      <div class="modal-header">
+        <div class="modal-title" id="linkModalTitle">Add Link</div>
+        <button class="close-btn" id="btnCloseLink">Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="section-content">
+          <div class="form-row">
+            <input id="fldTitle" class="input" placeholder="Title" />
+            <input id="fldURL" class="input" placeholder="URL (https://...)" />
+          </div>
+          <div class="form-row">
+            <select id="fldCategory" class="select"></select>
+            <input id="fldNewCategory" class="input" placeholder="Or create new category" />
+          </div>
+          <div class="form-row">
+            <label><input type="checkbox" id="fldNewTab" checked> Open in new tab</label>
+          </div>
+
+          <div class="hr"></div>
+
+          <h2>Color</h2>
+          <div class="form-row">
+            <div class="palette" id="palette"></div>
+          </div>
+          <div class="form-row">
+            <input type="color" id="fldColorPicker" class="input" value="#2563eb" />
+          </div>
+          <div class="rgb-row">
+            <label>R <input type="number" id="fldR" min="0" max="255" value="37"></label>
+            <label>G <input type="number" id="fldG" min="0" max="255" value="99"></label>
+            <label>B <input type="number" id="fldB" min="0" max="255" value="235"></label>
+            <span class="badge" id="rgbPreview">#2563eb</span>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="controls">
+            <button class="link-btn" id="btnSaveLink">Save</button>
+            <button class="link-btn hidden" id="btnDeleteLink">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<input id="fileImport" type="file" accept="application/json" style="display:none" />
+<script src="script.js"></script>
+</body>
+</html>
